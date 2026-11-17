@@ -12,7 +12,10 @@
   var s = document.querySelector('.big-quote-source a');
   if (pool.length && q && s) {
     var a = pool[Math.floor(Math.random() * pool.length)];
-    q.textContent = a.textContent;
+    var t = a.textContent;
+    q.textContent = t;
+    q.classList.toggle('is-long', t.length > 90 && t.length <= 150);
+    q.classList.toggle('is-xlong', t.length > 150);
     s.href = a.href;
   }
 })();

@@ -41,6 +41,7 @@ SOURCE_LINK_TEXT = "yazının tamamı →"
 
 SKINS = {
     "dawn": {
+        "--accent": "#b0644e",
         "--sky": "linear-gradient(180deg, #f1d9d1 0%, #f4e7e0 38%, #f8f4ee 100%)",
         "--link-color": "#245f9e", "--visited-color": "#6c4f9c", "--blockquote-color": "#5f554c",
         "--glow": "255, 186, 150", "--sun-pos": "14% 20%", "--disc": "26px",
@@ -48,13 +49,15 @@ SKINS = {
         "--fog": "238, 233, 230", "--veil": "246, 237, 232", "--frame": "58, 53, 48",
     },
     "day": {
+        "--accent": "#b07a2a",
         "--sky": "linear-gradient(180deg, #dce9f4 0%, #ecf0f1 40%, #f8f6f1 100%)",
         "--link-color": "#245f9e", "--visited-color": "#6c4f9c",
-        "--glow": "255, 210, 110", "--sun-pos": "86% 7%", "--disc": "30px",
+        "--glow": "255, 210, 110", "--sun-pos": "82% 16%", "--disc": "30px",
         "--fx": "70, 85, 110", "--cloud": "rgba(182, 194, 208, .5)", "--wash": "rgba(140, 150, 165, .24)",
         "--fog": "236, 235, 232", "--veil": "244, 244, 242", "--frame": "58, 53, 48",
     },
     "dusk": {
+        "--accent": "#b0563a",
         "--sky": "linear-gradient(180deg, #e0c2c0 0%, #ebd4c6 40%, #f4ebe2 100%)",
         "--text-color": "#3a3028", "--link-color": "#2a5891", "--visited-color": "#684c95",
         "--blockquote-color": "#5d5047",
@@ -63,11 +66,12 @@ SKINS = {
         "--fog": "236, 228, 224", "--veil": "242, 232, 226", "--frame": "58, 48, 40",
     },
     "night": {
+        "--accent": "#e3c27a",
         "--sky": "linear-gradient(180deg, #0c1323 0%, #141a2a 50%, #1a1d26 100%)",
         "--heading-color": "#ece8e1", "--text-color": "#cdc8bf", "--link-color": "#8cc2e0",
         "--visited-color": "#b2a0d6", "--blockquote-color": "#a29d94",
         "--code-background-color": "#232838", "--code-color": "#cdc8bf",
-        "--glow": "232, 232, 250", "--sun-pos": "84% 9%", "--disc": "13px",
+        "--glow": "232, 232, 250", "--sun-pos": "82% 15%", "--disc": "13px",
         "--fx": "180, 200, 230", "--cloud": "rgba(62, 72, 98, .6)", "--wash": "rgba(0, 0, 0, .22)",
         "--fog": "70, 75, 88", "--veil": "18, 22, 34", "--frame": "205, 200, 191",
     },
@@ -243,7 +247,7 @@ def berlin_weather():
 
 
 def build_css(time_of_day, weather, temp, clock):
-    base = (HERE / "base.css").read_text(encoding="utf-8")
+    base = (HERE / "fonts" / "fraunces.css").read_text(encoding="utf-8") + "\n" + (HERE / "base.css").read_text(encoding="utf-8")
     vars_ = "\n".join(f"    {k}: {v};" for k, v in SKINS[time_of_day].items())
     layer = WEATHER[weather]
     if weather == "clear" and time_of_day == "night":
@@ -338,6 +342,11 @@ def candidates(content):
     return out
 
 
+def length_class(text):
+    n = len(text)
+    return " is-xlong" if n > 150 else " is-long" if n > 90 else ""
+
+
 def quote_block(pool):
     first_text, first_url = pool[0]
     items = "".join(
@@ -345,7 +354,7 @@ def quote_block(pool):
     )
     return (
         '<div class="sky-quote">'
-        f'<p class="big-quote">{html.escape(first_text)}</p>'
+        f'<p class="big-quote{length_class(first_text)}">{html.escape(first_text)}</p>'
         f'<p class="big-quote-source"><a href="{html.escape(first_url)}">{SOURCE_LINK_TEXT}</a></p>'
         f'<ul class="sky-pool">{items}</ul>'
         "</div>"

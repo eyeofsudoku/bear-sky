@@ -19,6 +19,7 @@
     --code-color: #2a2520;
     --blockquote-color: #5a524a;
     --sky: #f8f6f1;
+    --accent: #b07a2a;
 }
 
 /* the sky: whole page */
@@ -192,19 +193,46 @@ ul.blog-posts li a:visited {
     color: var(--visited-color);
 }
 
-/* ---------- big quote on the home page ---------- */
+/* ---------- big quote on the home page (style B, "Sahne") ---------- */
 .big-quote {
-    font-size: clamp(2.1rem, 6vw, 3.5rem);
+    position: relative;
+    font-family: "Fraunces Display", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2.1rem, 6vw, 3.4rem);
     line-height: 1.12;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: var(--heading-color);
-    margin: 1.4em 0 0.35em;
+    margin: 1.6em 0 0.5em;
+    padding-top: 0.62em;
     text-wrap: balance;
+}
+
+/* one large opening mark above the line, coloured by the sky */
+.big-quote::before {
+    content: "\201C";
+    position: absolute;
+    left: -0.04em;
+    top: -0.18em;
+    font-size: 2.6em;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.9;
+}
+
+/* longer lines step down so they never flood a phone screen */
+.big-quote.is-long {
+    font-size: clamp(1.7rem, 4.6vw, 2.6rem);
+}
+
+.big-quote.is-xlong {
+    font-size: clamp(1.45rem, 3.8vw, 2.1rem);
 }
 
 .big-quote-source {
     margin: 0 0 3em;
-    font-size: 0.9em;
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
 }
 
 .sky-pool {
