@@ -1,0 +1,273 @@
+/* ------------------------------------------------------------------
+   Delilerden Sen Anlarsın: base theme
+   Edit the look HERE, not in the Bear dashboard: the script sends
+   this file (plus the current sky) to Bear every 30 minutes, so
+   changes made in the dashboard get overwritten.
+   ------------------------------------------------------------------ */
+
+:root {
+    --width: 720px;
+    --gutter: 56px;
+    --font-main: Verdana, sans-serif;
+    --font-secondary: Verdana, sans-serif;
+    --font-scale: 1.05em;
+    --heading-color: #1a1a1a;
+    --text-color: #3a3530;
+    --link-color: #2a6db5;
+    --visited-color: #7a5faa;
+    --code-background-color: #eeece7;
+    --code-color: #2a2520;
+    --blockquote-color: #5a524a;
+    --sky: #f8f6f1;
+}
+
+/* the sky: whole page */
+html {
+    position: relative;
+    min-height: 100%;
+    background: var(--sky);
+}
+
+/* weather layers sit behind everything */
+html::before,
+html::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding: 24px var(--gutter);
+    max-width: calc(var(--width) + 2 * var(--gutter));
+    box-sizing: border-box;
+    text-align: left;
+    background: transparent;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.75;
+    color: var(--text-color);
+    letter-spacing: 0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+}
+
+a {
+    color: var(--link-color);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+time {
+    font-family: monospace;
+    font-style: normal;
+    font-size: 15px;
+    color: var(--blockquote-color);
+}
+
+main {
+    line-height: 1.8;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 6px 8px;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid;
+    border-color: var(--code-background-color);
+    margin: 2em 0;
+    opacity: 0.6;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+code {
+    font-family: monospace;
+    padding: 2px 5px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    font-size: 0.92em;
+}
+
+blockquote {
+    border-left: 3px solid var(--link-color);
+    color: var(--blockquote-color);
+    padding-left: 1.25em;
+    margin-left: 0;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+    color: var(--blockquote-color);
+    font-size: 0.9em;
+}
+
+.title:hover {
+    text-decoration: none;
+}
+
+.title h1 {
+    font-size: 1.5em;
+    margin-top: 0;
+}
+
+.inline {
+    width: auto !important;
+}
+
+.highlight, .code {
+    padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 4px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+    font-size: 0.92em;
+    line-height: 1.6;
+}
+
+/* blog post list */
+ul.blog-posts {
+    list-style-type: none;
+    padding: unset;
+}
+
+ul.blog-posts li {
+    display: flex;
+    gap: 1em;
+    padding: 4px 0;
+}
+
+ul.blog-posts li span {
+    flex: 0 0 130px;
+    color: var(--blockquote-color);
+}
+
+ul.blog-posts li a:visited {
+    color: var(--visited-color);
+}
+
+/* ---------- big quote on the home page ---------- */
+.big-quote {
+    font-size: clamp(2.1rem, 6vw, 3.5rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: var(--heading-color);
+    margin: 1.4em 0 0.35em;
+    text-wrap: balance;
+}
+
+.big-quote-source {
+    margin: 0 0 3em;
+    font-size: 0.9em;
+}
+
+.sky-pool {
+    display: none;
+}
+
+/* ---------- Berlin badge ---------- */
+.sky-badge {
+    position: absolute;
+    top: 22px;
+    right: 26px;
+    z-index: 1;
+    text-align: center;
+    line-height: 1.3;
+    padding: 9px 15px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(var(--frame), 0.35);
+    background: rgba(var(--veil), 0.28);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    color: var(--heading-color);
+    font-family: var(--font-secondary);
+}
+
+.sky-badge .clock {
+    font-size: 1.2em;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+.sky-badge .temp {
+    font-size: 0.95em;
+    color: var(--text-color);
+}
+
+.sky-badge .city {
+    font-size: 0.62em;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--blockquote-color);
+    margin-top: 2px;
+}
+
+/* narrow screens: badge becomes one row above the title */
+@media (max-width: 1000px) {
+    body {
+        padding-top: 78px;
+    }
+    .sky-badge {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+        top: 18px;
+        right: 20px;
+        padding: 6px 13px;
+    }
+    .sky-badge .city {
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    :root {
+        --gutter: 20px;
+    }
+}

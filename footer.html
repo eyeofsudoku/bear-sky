@@ -1,0 +1,19 @@
+<div class="sky-badge" aria-label="Berlin"><div class="clock"></div><div class="temp"></div><div class="city">Berlin</div></div>
+<script>
+(function () {
+  var c = document.querySelector('.sky-badge .clock');
+  function tick() {
+    if (c) c.textContent = new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' }).format(new Date());
+  }
+  tick();
+  setInterval(tick, 15000);
+  var pool = document.querySelectorAll('.sky-pool a');
+  var q = document.querySelector('.big-quote');
+  var s = document.querySelector('.big-quote-source a');
+  if (pool.length && q && s) {
+    var a = pool[Math.floor(Math.random() * pool.length)];
+    q.textContent = a.textContent;
+    s.href = a.href;
+  }
+})();
+</script>
