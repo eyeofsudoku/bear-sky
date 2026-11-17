@@ -3,7 +3,8 @@
 Berlin sky for a Bear blog.
 
   python sky/sky.py sky      -> set the theme from Berlin's weather and time of day
-  python sky/sky.py quotes   -> refresh the pool of quotable lines on the home page
+  python sky/sky.py quotes   -> refresh the pool of lines from posts tagged "quotable"
+  python sky/sky.py tag-all  -> one-off: tag every existing post "quotable", except the excluded titles
   add --dry-run to print what would be sent without changing the blog
 
 Needs the environment variables BEAR_API_KEY and BEAR_SUBDOMAIN.
@@ -27,9 +28,11 @@ HERE = Path(__file__).resolve().parent
 BERLIN = ZoneInfo("Europe/Berlin")
 LAT, LON = 52.52, 13.405
 
-# Posts whose title starts with one of these are never quoted
-# (song lyrics and translations are other people's words). Empty the list to quote everything.
-EXCLUDE_TITLE_PREFIXES = ["bazı şarkılar", "🎵", "serbest çeviri"]
+# Only posts with this tag are quoted. Tag new posts yourself when you want them in the pool.
+QUOTE_TAG = "quotable"
+# Used once by "tag-all": posts whose title starts with one of these do NOT get the tag
+# (song lyrics and translations are other people's words).
+EXCLUDE_TITLE_PREFIXES = ["bazı şarkılar", "serbest çeviri"]
 POOL_SIZE = 80
 SOURCE_LINK_TEXT = "yazının tamamı →"
 
@@ -371,18 +374,44 @@ def job_sky(bear):
     print("Sky updated.")
 
 
-def job_quotes(bear):
-    pool = []
+def has_tag(tags, tag):
+    return any((t or "").strip().lower() == tag for t in (tags or []))
+
+
+def job_tag_all(bear):
+    tagged = skipped = already = 0
     for p in bear.posts():
-        title = (p.get("title") or "").strip().lower()
-        if any(title.startswith(x.lower()) for x in EXCLUDE_TITLE_PREFIXES):
+        title = (p.get("title") or "").strip()
+        if any(title.lower().startswith(x.lower()) for x in EXCLUDE_TITLE_PREFIXES):
+            print(f"  skip   {title}")
+            skipped += 1
             continue
         full = bear.call("GET", f"post/{p['uid']}/")
         time.sleep(1.1)
+        tags = full.get("tags") or []
+        if has_tag(tags, QUOTE_TAG):
+            already += 1
+            continue
+        bear.call("PATCH", f"post/{p['uid']}/", {"tags": list(tags) + [QUOTE_TAG]})
+        time.sleep(1.1)
+        print(f"  tagged {title}")
+        tagged += 1
+    print(f"Done: {tagged} tagged, {already} already had the tag, {skipped} skipped.")
+
+
+def job_quotes(bear):
+    pool = []
+    for p in bear.posts():
+        if "tags" in p and not has_tag(p["tags"], QUOTE_TAG):
+            continue
+        full = bear.call("GET", f"post/{p['uid']}/")
+        time.sleep(1.1)
+        if not has_tag(full.get("tags"), QUOTE_TAG):
+            continue
         for c in candidates(full.get("content", "")):
             pool.append((c, full.get("url") or p.get("url")))
     if not pool:
-        print("No quotable lines found, home page left as it is.")
+        print(f'No lines found in posts tagged "{QUOTE_TAG}", home page left as it is.')
         return
     random.shuffle(pool)
     pool = pool[:POOL_SIZE]
@@ -401,7 +430,7 @@ def main():
     if not key or not sub:
         raise SystemExit("BEAR_API_KEY and BEAR_SUBDOMAIN must be set.")
     bear = Bear(sub, key, dry_run=dry)
-    {"sky": job_sky, "quotes": job_quotes}[mode](bear)
+    {"sky": job_sky, "quotes": job_quotes, "tag-all": job_tag_all}[mode](bear)
 
 
 if __name__ == "__main__":

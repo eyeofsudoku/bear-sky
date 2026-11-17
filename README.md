@@ -22,5 +22,6 @@ show it in large type, and keep the Berlin clock in the corner badge ticking.
 ## Settings
 
 - The API key lives in the repo secret `BEAR_API_KEY`.
-- Posts whose titles start with an entry in `EXCLUDE_TITLE_PREFIXES` (in `sky.py`) are never quoted.
+- Only posts tagged `quotable` are quoted. Tag new posts in the Bear editor when you want them in the pool.
+- `tag-all` (run once by hand) tags every existing post except those listed in `EXCLUDE_TITLE_PREFIXES`.
 - Run a job by hand: Actions → Berlin sky → Run workflow.

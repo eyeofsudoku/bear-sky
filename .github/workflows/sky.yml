@@ -9,7 +9,7 @@ on:
       job:
         description: Which job to run
         type: choice
-        options: [sky, quotes]
+        options: [sky, quotes, tag-all]
         default: sky
 
 permissions:
