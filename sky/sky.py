@@ -106,7 +106,7 @@ body::before {
 /* keep the text above the veil */
 body > header,
 body > main,
-footer > :not(.sky-badge) {
+footer > :not(.sky-badge):not(#footer-directive) {
     position: relative;
     z-index: 1;
 }
