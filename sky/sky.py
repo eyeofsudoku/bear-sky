@@ -34,7 +34,8 @@ QUOTE_TAG = "quotable"
 # Used once by "tag-all": posts whose title starts with one of these do NOT get the tag
 # (song lyrics and translations are other people's words).
 EXCLUDE_TITLE_PREFIXES = ["bazı şarkılar", "serbest çeviri"]
-POOL_SIZE = 80
+# All lines from tagged posts go into the pool; this is only a safety cap.
+POOL_SIZE = 3000
 SOURCE_LINK_TEXT = "yazının tamamı →"
 
 # ---------------------------------------------------------------- palettes (time of day)
@@ -426,12 +427,14 @@ def job_quotes(bear):
     if not pool:
         print(f'No lines found in posts tagged "{QUOTE_TAG}", home page left as it is.')
         return
+    seen = set()
+    pool = [x for x in pool if not (x[0] in seen or seen.add(x[0]))]  # drop repeated lines
     random.shuffle(pool)
     pool = pool[:POOL_SIZE]
     home = bear.call("GET", "blog/").get("content", "")
     new_home = put_block(home, quote_block(pool))
     bear.call("PATCH", "blog/", {"content": new_home})
-    print(f"Quote pool updated: {len(pool)} lines.")
+    print(f"Quote pool updated: {len(pool)} lines, {len(new_home.encode()) // 1024} KB home page.")
 
 
 def main():
