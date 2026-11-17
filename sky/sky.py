@@ -27,6 +27,7 @@ from zoneinfo import ZoneInfo
 HERE = Path(__file__).resolve().parent
 BERLIN = ZoneInfo("Europe/Berlin")
 LAT, LON = 52.52, 13.405
+USER_AGENT = "bear-sky/1.0 (+https://github.com/eyeofsudoku/bear-sky)"
 
 # Only posts with this tag are quoted. Tag new posts yourself when you want them in the pool.
 QUOTE_TAG = "quotable"
@@ -226,7 +227,8 @@ def berlin_weather():
         "&current=temperature_2m,weather_code&daily=sunrise,sunset"
         "&timezone=Europe%2FBerlin&forecast_days=1"
     )
-    with urllib.request.urlopen(url, timeout=20) as r:
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=20) as r:
         d = json.load(r)
     now = datetime.now(BERLIN)
     sunrise = datetime.fromisoformat(d["daily"]["sunrise"][0]).replace(tzinfo=BERLIN)
@@ -271,6 +273,8 @@ class Bear:
         for attempt in range(4):
             req = urllib.request.Request(self.root + path, data=data, method=method)
             req.add_header("Authorization", f"Bearer {self.key}")
+            # Bear's Cloudflare blocks Python's default "Python-urllib" signature (error 1010)
+            req.add_header("User-Agent", USER_AGENT)
             req.add_header("Accept", "application/json")
             if data is not None:
                 req.add_header("Content-Type", "application/json")
