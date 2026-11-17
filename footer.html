@@ -9,16 +9,22 @@
   tick();
   setInterval(tick, 15000);
 
-  // Big quote: random quotable post -> random line from it
-  var box = document.querySelector('.sky-quote');
-  var q = document.querySelector('.big-quote');
-  var s = document.querySelector('.big-quote-source a');
-  var posts = [].map.call(document.querySelectorAll('.sky-posts a'), function (a) { return a.href; });
-  if (!box || !q || !s || !posts.length) return;
-  box.classList.add('sky-loading');
+  // Big quote (home page only): random quotable post -> random line from it.
+  // The list of quotable posts comes from the theme (--sky-posts), written by the GitHub script.
+  var main = document.querySelector('body.home main');
+  var raw = getComputedStyle(document.documentElement).getPropertyValue('--sky-posts').trim().replace(/^["']|["']$/g, '');
+  var posts = raw ? raw.split(/\s+/) : [];
+  if (!main || !posts.length) return;
+  var box = document.createElement('div');
+  box.className = 'sky-quote sky-loading';
+  box.innerHTML = '<p class="big-quote"></p><p class="big-quote-source"><a href="#">yazının tamamı →</a></p>';
+  main.appendChild(box);
+  var q = box.querySelector('.big-quote');
+  var s = box.querySelector('.big-quote-source a');
   var done = false;
   function show() { if (!done) { done = true; box.classList.remove('sky-loading'); } }
-  setTimeout(show, 3000); // never leave the quote hidden
+  function fail() { if (!done) { done = true; box.remove(); } }
+  setTimeout(fail, 4000); // nothing found in time: show no quote rather than an empty one
 
   function size(t) {
     q.classList.toggle('is-long', t.length > 90 && t.length <= 150);
@@ -52,7 +58,7 @@
   }
 
   function attempt(n) {
-    if (!n) return show();
+    if (!n) return fail();
     var url = posts[Math.floor(Math.random() * posts.length)];
     fetch(url, { credentials: 'same-origin' })
       .then(function (r) { if (!r.ok) throw 0; return r.text(); })
@@ -60,7 +66,8 @@
         var L = linesOf(new DOMParser().parseFromString(h, 'text/html'));
         if (!L.length) return attempt(n - 1);
         var t = L[Math.floor(Math.random() * L.length)];
-        if (!done) { q.textContent = t; size(t); s.href = url; }
+        if (done) return;
+        q.textContent = t; size(t); s.href = url;
         show();
       })
       .catch(function () { attempt(n - 1); });

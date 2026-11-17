@@ -47,6 +47,17 @@ jobs:
           BEAR_API_KEY: ${{ secrets.BEAR_API_KEY }}
           BEAR_SUBDOMAIN: delilerdensenanlarsin
 
+      - name: Save the list of quotable posts
+        if: steps.pick.outputs.job == 'quotes'
+        run: |
+          git add sky/quotable.txt
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Update quotable posts"
+            git push
+          fi
+
       # GitHub pauses scheduled runs in repos with no commits for 60 days.
       - name: Keep the schedule alive
         if: steps.pick.outputs.job == 'quotes'

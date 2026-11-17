@@ -7,9 +7,10 @@ Every 30 minutes a GitHub Action checks the weather and time of day in Berlin
 the Bear API: dawn, day, dusk or night, with clear sky, clouds, rain, snow or fog.
 Everything is still; nothing animates.
 
-Once a day it writes the list of posts tagged `quotable` (addresses only) to the home page.
-On every visit, the footer script picks one of those posts at random, reads it, and takes a random line from it,
-shown in large type. It also keeps the Berlin clock in the corner badge ticking.
+Once a day it saves the list of posts tagged `quotable` into the theme (`sky/quotable.txt`).
+The home page itself keeps only your own text. On every visit, the footer script picks one of
+those posts at random, reads it, and shows a random line from it in large type. It also keeps
+the Berlin clock in the corner badge ticking.
 
 ## Files
 

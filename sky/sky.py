@@ -3,7 +3,7 @@
 Berlin sky for a Bear blog.
 
   python sky/sky.py sky      -> set the theme from Berlin's weather and time of day
-  python sky/sky.py quotes   -> refresh the list of posts tagged "quotable" on the home page
+  python sky/sky.py quotes   -> refresh the list of posts tagged "quotable" (kept in the theme)
   python sky/sky.py tag-all  -> one-off: tag every existing post "quotable", except the excluded titles
   add --dry-run to print what would be sent without changing the blog
 
@@ -19,6 +19,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -34,7 +35,6 @@ QUOTE_TAG = "quotable"
 # Used once by "tag-all": posts whose title starts with one of these do NOT get the tag
 # (song lyrics and translations are other people's words).
 EXCLUDE_TITLE_PREFIXES = ["bazı şarkılar", "serbest çeviri"]
-SOURCE_LINK_TEXT = "yazının tamamı →"
 
 # ---------------------------------------------------------------- palettes (time of day)
 
@@ -255,6 +255,7 @@ def build_css(time_of_day, weather, temp, clock):
     return (
         f"{base}\n/* ===== sky: {time_of_day}, {weather}, {temp_txt}, set {clock} Berlin time ===== */\n"
         f":root {{\n{vars_}\n}}\n{layer}\n"
+        f':root {{ --sky-posts: "{" ".join(quotable_paths())}"; }}\n'
         f'.sky-badge .temp::before {{ content: "{temp_txt}"; }}\n'
         f'.sky-badge .clock:empty::before {{ content: "{clock}"; }}\n'
     )
@@ -341,35 +342,7 @@ def candidates(content):
     return out
 
 
-def length_class(text):
-    n = len(text)
-    return " is-xlong" if n > 150 else " is-long" if n > 90 else ""
-
-
-def quote_block(fallback_text, fallback_url, posts):
-    """Home page block: one fallback line plus the list of quotable posts.
-    The footer script picks a random post from the list on every visit and
-    takes a random line from that post; the fallback shows only if that fails."""
-    items = "".join(
-        f'<li><a href="{html.escape(u)}">{html.escape(t)}</a></li>' for t, u in posts
-    )
-    return (
-        '<div class="sky-quote">'
-        f'<p class="big-quote{length_class(fallback_text)}">{html.escape(fallback_text)}</p>'
-        f'<p class="big-quote-source"><a href="{html.escape(fallback_url)}">{SOURCE_LINK_TEXT}</a></p>'
-        f'<ul class="sky-posts">{items}</ul>'
-        "</div>"
-    )
-
-
 BLOCK_RX = re.compile(r'<div class="sky-quote">.*?</ul></div>', re.S)  # matches old and new block
-
-
-def put_block(home, block):
-    home = home or ""
-    if BLOCK_RX.search(home):
-        return BLOCK_RX.sub(lambda m: block, home, count=1)
-    return home.rstrip() + "\n\n" + block + "\n"
 
 
 # ---------------------------------------------------------------- jobs
@@ -413,37 +386,35 @@ def job_tag_all(bear):
     print(f"Done: {tagged} tagged, {already} already had the tag, {skipped} skipped.")
 
 
+QUOTABLE_FILE = HERE / "quotable.txt"
+
+
+def quotable_paths():
+    if not QUOTABLE_FILE.exists():
+        return []
+    return [l.strip() for l in QUOTABLE_FILE.read_text(encoding="utf-8").splitlines() if l.strip().startswith("/")]
+
+
 def job_quotes(bear):
-    """Daily: refresh the list of quotable posts on the home page (addresses only)."""
-    posts = []
+    """Daily: save the addresses of posts tagged "quotable" (into the theme, not the home page)."""
+    paths = []
     for p in bear.posts():
-        if "tags" in p and not has_tag(p["tags"], QUOTE_TAG):
-            continue
-        if "tags" not in p:
-            full = bear.call("GET", f"post/{p['uid']}/")
+        tags = p.get("tags") if "tags" in p else None
+        if tags is None:
+            tags = bear.call("GET", f"post/{p['uid']}/").get("tags")
             time.sleep(1.1)
-            if not has_tag(full.get("tags"), QUOTE_TAG):
-                continue
-        posts.append(((p.get("title") or "").strip(), p.get("url"), p["uid"]))
-    if not posts:
-        print(f'No posts tagged "{QUOTE_TAG}", home page left as it is.')
-        return
-    # one fallback line, for readers without JavaScript
-    random.shuffle(posts)
-    fallback = None
-    for title, url, uid in posts[:5]:
-        lines = candidates(bear.call("GET", f"post/{uid}/").get("content", ""))
-        time.sleep(1.1)
-        if lines:
-            fallback = (random.choice(lines), url)
-            break
-    if not fallback:
-        fallback = (posts[0][0], posts[0][1])
-    posts.sort(key=lambda x: x[0])
-    home = bear.call("GET", "blog/").get("content", "")
-    new_home = put_block(home, quote_block(fallback[0], fallback[1], [(t, u) for t, u, _ in posts]))
-    bear.call("PATCH", "blog/", {"content": new_home})
-    print(f"Quotable posts: {len(posts)}; home page {len(new_home.encode()) // 1024} KB.")
+        if has_tag(tags, QUOTE_TAG) and p.get("url"):
+            paths.append(urllib.parse.urlparse(p["url"]).path or "/")
+    paths = sorted(set(paths))
+    QUOTABLE_FILE.write_text("\n".join(paths) + "\n", encoding="utf-8")
+    print(f'Quotable posts: {len(paths)}')
+    # remove the old quote block from the home page, leaving the description as it was
+    home = bear.call("GET", "blog/").get("content", "") or ""
+    clean = BLOCK_RX.sub("", home).rstrip() + "\n"
+    if clean.strip() != home.strip():
+        bear.call("PATCH", "blog/", {"content": clean})
+        print("Home page cleaned: only your own text is left.")
+    job_sky(bear)
 
 
 def main():
