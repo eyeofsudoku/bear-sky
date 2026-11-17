@@ -235,8 +235,20 @@ ul.blog-posts li a:visited {
     letter-spacing: 0.14em;
 }
 
-.sky-pool {
+.sky-pool,
+.sky-posts {
     display: none;
+}
+
+/* while the footer script fetches a line, keep the quote invisible (no flicker) */
+.sky-quote.sky-loading .big-quote,
+.sky-quote.sky-loading .big-quote-source {
+    opacity: 0;
+}
+
+.sky-quote .big-quote,
+.sky-quote .big-quote-source {
+    transition: opacity 0.4s ease;
 }
 
 /* ---------- Berlin badge ---------- */

@@ -3,7 +3,7 @@
 Berlin sky for a Bear blog.
 
   python sky/sky.py sky      -> set the theme from Berlin's weather and time of day
-  python sky/sky.py quotes   -> refresh the pool of lines from posts tagged "quotable"
+  python sky/sky.py quotes   -> refresh the list of posts tagged "quotable" on the home page
   python sky/sky.py tag-all  -> one-off: tag every existing post "quotable", except the excluded titles
   add --dry-run to print what would be sent without changing the blog
 
@@ -34,8 +34,6 @@ QUOTE_TAG = "quotable"
 # Used once by "tag-all": posts whose title starts with one of these do NOT get the tag
 # (song lyrics and translations are other people's words).
 EXCLUDE_TITLE_PREFIXES = ["bazı şarkılar", "serbest çeviri"]
-# All lines from tagged posts go into the pool; this is only a safety cap.
-POOL_SIZE = 3000
 SOURCE_LINK_TEXT = "yazının tamamı →"
 
 # ---------------------------------------------------------------- palettes (time of day)
@@ -348,21 +346,23 @@ def length_class(text):
     return " is-xlong" if n > 150 else " is-long" if n > 90 else ""
 
 
-def quote_block(pool):
-    first_text, first_url = pool[0]
+def quote_block(fallback_text, fallback_url, posts):
+    """Home page block: one fallback line plus the list of quotable posts.
+    The footer script picks a random post from the list on every visit and
+    takes a random line from that post; the fallback shows only if that fails."""
     items = "".join(
-        f'<li><a href="{html.escape(u)}">{html.escape(t)}</a></li>' for t, u in pool
+        f'<li><a href="{html.escape(u)}">{html.escape(t)}</a></li>' for t, u in posts
     )
     return (
         '<div class="sky-quote">'
-        f'<p class="big-quote{length_class(first_text)}">{html.escape(first_text)}</p>'
-        f'<p class="big-quote-source"><a href="{html.escape(first_url)}">{SOURCE_LINK_TEXT}</a></p>'
-        f'<ul class="sky-pool">{items}</ul>'
+        f'<p class="big-quote{length_class(fallback_text)}">{html.escape(fallback_text)}</p>'
+        f'<p class="big-quote-source"><a href="{html.escape(fallback_url)}">{SOURCE_LINK_TEXT}</a></p>'
+        f'<ul class="sky-posts">{items}</ul>'
         "</div>"
     )
 
 
-BLOCK_RX = re.compile(r'<div class="sky-quote">.*?</ul></div>', re.S)
+BLOCK_RX = re.compile(r'<div class="sky-quote">.*?</ul></div>', re.S)  # matches old and new block
 
 
 def put_block(home, block):
@@ -414,27 +414,36 @@ def job_tag_all(bear):
 
 
 def job_quotes(bear):
-    pool = []
+    """Daily: refresh the list of quotable posts on the home page (addresses only)."""
+    posts = []
     for p in bear.posts():
         if "tags" in p and not has_tag(p["tags"], QUOTE_TAG):
             continue
-        full = bear.call("GET", f"post/{p['uid']}/")
-        time.sleep(1.1)
-        if not has_tag(full.get("tags"), QUOTE_TAG):
-            continue
-        for c in candidates(full.get("content", "")):
-            pool.append((c, full.get("url") or p.get("url")))
-    if not pool:
-        print(f'No lines found in posts tagged "{QUOTE_TAG}", home page left as it is.')
+        if "tags" not in p:
+            full = bear.call("GET", f"post/{p['uid']}/")
+            time.sleep(1.1)
+            if not has_tag(full.get("tags"), QUOTE_TAG):
+                continue
+        posts.append(((p.get("title") or "").strip(), p.get("url"), p["uid"]))
+    if not posts:
+        print(f'No posts tagged "{QUOTE_TAG}", home page left as it is.')
         return
-    seen = set()
-    pool = [x for x in pool if not (x[0] in seen or seen.add(x[0]))]  # drop repeated lines
-    random.shuffle(pool)
-    pool = pool[:POOL_SIZE]
+    # one fallback line, for readers without JavaScript
+    random.shuffle(posts)
+    fallback = None
+    for title, url, uid in posts[:5]:
+        lines = candidates(bear.call("GET", f"post/{uid}/").get("content", ""))
+        time.sleep(1.1)
+        if lines:
+            fallback = (random.choice(lines), url)
+            break
+    if not fallback:
+        fallback = (posts[0][0], posts[0][1])
+    posts.sort(key=lambda x: x[0])
     home = bear.call("GET", "blog/").get("content", "")
-    new_home = put_block(home, quote_block(pool))
+    new_home = put_block(home, quote_block(fallback[0], fallback[1], [(t, u) for t, u, _ in posts]))
     bear.call("PATCH", "blog/", {"content": new_home})
-    print(f"Quote pool updated: {len(pool)} lines, {len(new_home.encode()) // 1024} KB home page.")
+    print(f"Quotable posts: {len(posts)}; home page {len(new_home.encode()) // 1024} KB.")
 
 
 def main():

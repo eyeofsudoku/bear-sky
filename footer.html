@@ -1,22 +1,70 @@
 <div class="sky-badge" aria-label="Berlin"><div class="clock"></div><div class="temp"></div><div class="city">Berlin</div></div>
 <script>
 (function () {
+  // Berlin clock
   var c = document.querySelector('.sky-badge .clock');
   function tick() {
     if (c) c.textContent = new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' }).format(new Date());
   }
   tick();
   setInterval(tick, 15000);
-  var pool = document.querySelectorAll('.sky-pool a');
+
+  // Big quote: random quotable post -> random line from it
+  var box = document.querySelector('.sky-quote');
   var q = document.querySelector('.big-quote');
   var s = document.querySelector('.big-quote-source a');
-  if (pool.length && q && s) {
-    var a = pool[Math.floor(Math.random() * pool.length)];
-    var t = a.textContent;
-    q.textContent = t;
+  var posts = [].map.call(document.querySelectorAll('.sky-posts a'), function (a) { return a.href; });
+  if (!box || !q || !s || !posts.length) return;
+  box.classList.add('sky-loading');
+  var done = false;
+  function show() { if (!done) { done = true; box.classList.remove('sky-loading'); } }
+  setTimeout(show, 3000); // never leave the quote hidden
+
+  function size(t) {
     q.classList.toggle('is-long', t.length > 90 && t.length <= 150);
     q.classList.toggle('is-xlong', t.length > 150);
-    s.href = a.href;
   }
+
+  function linesOf(doc) {
+    var m = doc.querySelector('main');
+    if (!m) return [];
+    [].forEach.call(m.querySelectorAll('time'), function (t) { var p = t.closest('p'); if (p) p.remove(); });
+    [].forEach.call(m.querySelectorAll('h1, .tags, form, script, style, blockquote, pre, code, .sky-quote'), function (e) { e.remove(); });
+    var parts = [];
+    [].forEach.call(m.querySelectorAll('p, li'), function (el) {
+      var cl = el.cloneNode(true);
+      [].forEach.call(cl.querySelectorAll('br'), function (b) { b.replaceWith('\n'); });
+      cl.textContent.split('\n').forEach(function (l) {
+        l = l.replace(/\s+/g, ' ').trim();
+        if (l) parts.push(l);
+      });
+    });
+    if (!parts.length) return [];
+    var short = parts.filter(function (l) { return l.length < 80; }).length;
+    var pieces = [];
+    if (short / parts.length >= 0.7) {
+      pieces = parts; // poem: line by line
+    } else {
+      parts.forEach(function (l) { pieces = pieces.concat(l.match(/[^.!?…]+[.!?…]*/g) || []); });
+    }
+    return pieces.map(function (p) { return p.replace(/^[\s\-–—"'“”«»]+|[\s\-–—"'“”«»]+$/g, ''); })
+      .filter(function (p) { return p.length >= 12 && p.length <= 160 && p.split(' ').length >= 3; });
+  }
+
+  function attempt(n) {
+    if (!n) return show();
+    var url = posts[Math.floor(Math.random() * posts.length)];
+    fetch(url, { credentials: 'same-origin' })
+      .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+      .then(function (h) {
+        var L = linesOf(new DOMParser().parseFromString(h, 'text/html'));
+        if (!L.length) return attempt(n - 1);
+        var t = L[Math.floor(Math.random() * L.length)];
+        if (!done) { q.textContent = t; size(t); s.href = url; }
+        show();
+      })
+      .catch(function () { attempt(n - 1); });
+  }
+  attempt(3);
 })();
 </script>

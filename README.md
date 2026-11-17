@@ -7,9 +7,9 @@ Every 30 minutes a GitHub Action checks the weather and time of day in Berlin
 the Bear API: dawn, day, dusk or night, with clear sky, clouds, rain, snow or fog.
 Everything is still; nothing animates.
 
-Once a day it collects every line from the tagged posts into a hidden pool on the home page.
-A few lines of JavaScript in the blog footer pick one at random on every visit,
-show it in large type, and keep the Berlin clock in the corner badge ticking.
+Once a day it writes the list of posts tagged `quotable` (addresses only) to the home page.
+On every visit, the footer script picks one of those posts at random, reads it, and takes a random line from it,
+shown in large type. It also keeps the Berlin clock in the corner badge ticking.
 
 ## Files
 
