@@ -271,3 +271,8 @@ ul.blog-posts li a:visited {
         --gutter: 20px;
     }
 }
+
+/* the "quotable" tag is only for the script; hide it from readers */
+a[href$="?q=quotable"] {
+    display: none;
+}
