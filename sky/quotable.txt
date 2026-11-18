@@ -5,6 +5,7 @@
 /ekranlar/
 /esyalar-ve-insanlar/
 /ev-kopyalarmz/
+/fasulye-tanesi/
 /fear/
 /gecti/
 /gerizekallga-karsym/
