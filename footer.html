@@ -1,9 +1,34 @@
 <div class="sky-badge" aria-label="Berlin"><div class="clock"></div><div class="temp"></div><div class="city">Berlin</div></div>
 <script>
 (function () {
+  // Time of day from Berlin's clock and sun, so the sky is right even between script runs
+  var root = document.documentElement;
+  function berlinSky(now) {
+    var parts = {};
+    new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'shortOffset' })
+      .formatToParts(now).forEach(function (p) { parts[p.type] = p.value; });
+    var h = +parts.hour + +parts.minute / 60;
+    var off = parseFloat(String(parts.timeZoneName || '').replace('GMT', '')) || 1;
+    var n = Math.floor((now - Date.UTC(now.getUTCFullYear(), 0, 0)) / 864e5);
+    var lat = 52.52 * Math.PI / 180;
+    var decl = 23.44 * Math.PI / 180 * Math.sin(2 * Math.PI * (284 + n) / 365);
+    var ha = Math.acos(-Math.tan(lat) * Math.tan(decl)) * 180 / Math.PI;
+    var noon = 12 + off - 13.405 / 15, rise = noon - ha / 15, set = noon + ha / 15;
+    if (h < rise - 0.5 || h > set + 0.75) return 'night';
+    if (h < rise + 1) return 'dawn';
+    if (h > set - 1) return 'dusk';
+    return 'day';
+  }
+  function applySky() {
+    var t = berlinSky(new Date());
+    ['dawn', 'day', 'dusk', 'night'].forEach(function (x) { root.classList.toggle('sky-' + x, x === t); });
+    root.classList.add('sky-js');
+  }
+
   // Berlin clock
   var c = document.querySelector('.sky-badge .clock');
   function tick() {
+    applySky();
     if (c) c.textContent = new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' }).format(new Date());
   }
   tick();

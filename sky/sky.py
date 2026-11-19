@@ -38,6 +38,13 @@ EXCLUDE_TITLE_PREFIXES = ["bazı şarkılar", "serbest çeviri"]
 
 # ---------------------------------------------------------------- palettes (time of day)
 
+# text colours of the light skins; each skin sets every colour so switching skins never mixes two
+LIGHT_TEXT = {
+    "--heading-color": "#1a1a1a", "--text-color": "#3a3530", "--link-color": "#2a6db5",
+    "--visited-color": "#7a5faa", "--blockquote-color": "#5a524a",
+    "--code-background-color": "#eeece7", "--code-color": "#2a2520",
+}
+
 SKINS = {
     "dawn": {
         "--accent": "#b0644e",
@@ -231,8 +238,15 @@ def berlin_weather():
         "&timezone=Europe%2FBerlin&forecast_days=1"
     )
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=20) as r:
-        d = json.load(r)
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                d = json.load(r)
+            break
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
+            if attempt == 2:
+                raise SystemExit(f"Weather service unreachable: {e}")
+            time.sleep(10)
     now = datetime.now(BERLIN)
     sunrise = datetime.fromisoformat(d["daily"]["sunrise"][0]).replace(tzinfo=BERLIN)
     sunset = datetime.fromisoformat(d["daily"]["sunset"][0]).replace(tzinfo=BERLIN)
@@ -247,14 +261,21 @@ def berlin_weather():
 
 def build_css(time_of_day, weather, temp, clock):
     base = (HERE / "fonts" / "fraunces.css").read_text(encoding="utf-8") + "\n" + (HERE / "base.css").read_text(encoding="utf-8")
-    vars_ = "\n".join(f"    {k}: {v};" for k, v in SKINS[time_of_day].items())
+    block = lambda t: "\n".join(f"    {k}: {v};" for k, v in {**LIGHT_TEXT, **SKINS[t]}.items())
+    vars_ = block(time_of_day)
+    # The footer script sets html.sky-dawn/-day/-dusk/-night from the reader's clock (Berlin time),
+    # so the time of day is always right even if a scheduled run is late. :root is the fallback.
+    classes = "\n".join(f"html.sky-{t} {{\n{block(t)}\n}}" for t in SKINS)
     layer = WEATHER[weather]
-    if weather == "clear" and time_of_day == "night":
-        layer += NIGHT_STARS
+    if weather == "clear":
+        stars = NIGHT_STARS.replace("html::after", "html.sky-night::after")
+        if time_of_day == "night":
+            stars += NIGHT_STARS.replace("html::after", "html:not(.sky-js)::after")
+        layer += stars
     temp_txt = f"{temp}°C".replace("-", "−")
     return (
         f"{base}\n/* ===== sky: {time_of_day}, {weather}, {temp_txt}, set {clock} Berlin time ===== */\n"
-        f":root {{\n{vars_}\n}}\n{layer}\n"
+        f":root {{\n{vars_}\n}}\n{classes}\n{layer}\n"
         f':root {{ --sky-posts: "{" ".join(quotable_paths())}"; }}\n'
         f'.sky-badge .temp::before {{ content: "{temp_txt}"; }}\n'
         f'.sky-badge .clock:empty::before {{ content: "{clock}"; }}\n'
@@ -289,8 +310,16 @@ class Bear:
                 if e.code == 429 and attempt < 3:
                     time.sleep(int(e.headers.get("Retry-After", "10")) + 1)
                     continue
+                if e.code >= 500 and attempt < 3:
+                    time.sleep(10)
+                    continue
                 msg = e.read().decode(errors="replace")[:300]
                 raise SystemExit(f"Bear API {method} {path} -> {e.code}: {msg}")
+            except (urllib.error.URLError, TimeoutError) as e:
+                if attempt < 3:
+                    time.sleep(10)
+                    continue
+                raise SystemExit(f"Bear API {method} {path} unreachable: {e}")
 
     def posts(self):
         page = 1
