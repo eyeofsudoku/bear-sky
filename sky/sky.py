@@ -127,96 +127,10 @@ html::after {
 html::before {
     background: var(--wash);
 }
-/* rain: a large rain symbol on the left of the Berlin badge, gently moving */
-.sky-badge {
-    display: grid;
-    grid-template-columns: auto auto;
-    column-gap: 14px;
-    align-items: center;
-    padding-left: 14px;
-}
-.sky-badge > div {
-    grid-column: 2;
-}
-.sky-badge::before {
-    content: "";
-    grid-column: 1;
-    grid-row: 1 / span 3;
-    width: 24px;
-    height: 34px;
-    background: var(--link-color);
-    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2032%22%3E%3Cpath%20d%3D%22M12%201C12%201%202%2013.5%202%2020.5a10%2010%200%200%200%2020%200C22%2013.5%2012%201%2012%201z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2032%22%3E%3Cpath%20d%3D%22M12%201C12%201%202%2013.5%202%2020.5a10%2010%200%200%200%2020%200C22%2013.5%2012%201%2012%201z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") center / contain no-repeat;
-    animation: sky-drip 2.6s ease-in infinite;
-}
-@keyframes sky-drip {
-    0% { transform: translateY(-7px) scale(.85); opacity: 0; }
-    18% { opacity: 1; }
-    62% { transform: translateY(3px) scale(1); opacity: 1; }
-    82% { transform: translateY(7px) scaleY(.8) scaleX(1.15); opacity: 0; }
-    100% { transform: translateY(7px); opacity: 0; }
-}
-@media (max-width: 1000px) {
-    .sky-badge {
-        display: flex;
-        padding-left: 11px;
-    }
-    .sky-badge::before {
-        width: 13px;
-        height: 18px;
-    }
-}
-@media (prefers-reduced-motion: reduce) {
-    .sky-badge::before {
-        animation: none;
-    }
-}
 """,
     "snow": """
 html::before {
     background: var(--wash);
-}
-/* snow: a large snow symbol on the left of the Berlin badge, gently moving */
-.sky-badge {
-    display: grid;
-    grid-template-columns: auto auto;
-    column-gap: 14px;
-    align-items: center;
-    padding-left: 14px;
-}
-.sky-badge > div {
-    grid-column: 2;
-}
-.sky-badge::before {
-    content: "";
-    grid-column: 1;
-    grid-row: 1 / span 3;
-    width: 34px;
-    height: 34px;
-    background: var(--link-color);
-    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%3E%3Cg%20transform%3D%22rotate%280%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%2860%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28120%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28180%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28240%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28300%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%3E%3Cg%20transform%3D%22rotate%280%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%2860%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28120%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28180%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28240%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28300%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
-    animation: sky-flake 7s linear infinite;
-}
-@keyframes sky-flake {
-    0% { transform: translate(-1px, -2px) rotate(0deg); }
-    50% { transform: translate(1px, 2px) rotate(30deg); }
-    100% { transform: translate(-1px, -2px) rotate(60deg); }
-}
-@media (max-width: 1000px) {
-    .sky-badge {
-        display: flex;
-        padding-left: 11px;
-    }
-    .sky-badge::before {
-        width: 18px;
-        height: 18px;
-    }
-}
-@media (prefers-reduced-motion: reduce) {
-    .sky-badge::before {
-        animation: none;
-    }
 }
 """,
     "fog": """
@@ -231,6 +145,104 @@ html::before {
 }
 
 NIGHT_STARS = "\nhtml::after {\n    background-image:\n    " + STARS + ";\n}\n"
+
+
+# ---------------------------------------------------------------- weather symbol in the Berlin badge
+# Each icon: (shape, colour, animation, keyframes, desktop w, h, phone w, h). Shapes are single-colour masks.
+
+KF = {
+    "spin": "@keyframes sky-spin { to { transform: rotate(45deg); } }",
+    "float": "@keyframes sky-float { 0%, 100% { transform: translateY(-1.5px); } 50% { transform: translateY(1.5px); } }",
+    "drift": "@keyframes sky-drift { 0%, 100% { transform: translateX(-2.5px); } 50% { transform: translateX(2.5px); } }",
+    "haze": "@keyframes sky-haze { 0%, 100% { transform: translateX(-3px); opacity: .7; } 50% { transform: translateX(3px); opacity: 1; } }",
+    "drip": "@keyframes sky-drip { 0% { transform: translateY(-7px) scale(.85); opacity: 0; } 18% { opacity: 1; } 62% { transform: translateY(3px) scale(1); opacity: 1; } 82% { transform: translateY(7px) scaleY(.8) scaleX(1.15); opacity: 0; } 100% { transform: translateY(7px); opacity: 0; } }",
+    "flake": "@keyframes sky-flake { 0% { transform: translate(-1px, -2px) rotate(0deg); } 50% { transform: translate(1px, 2px) rotate(30deg); } 100% { transform: translate(-1px, -2px) rotate(60deg); } }",
+    "flash": "@keyframes sky-flash { 0%, 70%, 78%, 86%, 100% { opacity: 1; } 74%, 82% { opacity: .25; } }",
+}
+
+ICONS = {
+    "sun": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%3E%3Ccircle%20r%3D%226%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%280%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%2845%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%2890%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28135%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28180%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28225%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28270%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28315%29%22/%3E%3C/svg%3E")', "var(--accent)", "sky-spin 9s linear infinite", "spin", 34, 34, 18, 18),
+    "moon": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%3E%3Cpath%20d%3D%22M3.5%20-13%20A13%2013%200%201%200%2013%203.5%20A10%2010%200%200%201%203.5%20-13%20Z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E")', "var(--accent)", "sky-float 4s ease-in-out infinite", "float", 30, 30, 17, 17),
+    "partly-day": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%3E%3Crect%20x%3D%22-16%22%20y%3D%22-16%22%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%23fff%22/%3E%3Cpath%20d%3D%22M-8%2011%20H8.5%20A6.5%206.5%200%200%200%209.3%20-1.9%20A9%209%200%200%200%20-7.8%20-3.2%20A7%207%200%200%200%20-8%2011%20Z%22%20transform%3D%22translate%282%203%29%22%20fill%3D%22%23000%22%20stroke%3D%22%23000%22%20stroke-width%3D%224%22/%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask%3D%22url%28%23m%29%22%3E%3Cg%20transform%3D%22translate%28-5%20-5%29%20scale%280.62%29%22%3E%3Ccircle%20r%3D%226%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%280%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%2845%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%2890%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28135%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28180%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28225%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28270%29%22/%3E%3Crect%20x%3D%22-1.3%22%20y%3D%22-15%22%20width%3D%222.6%22%20height%3D%225.5%22%20rx%3D%221.3%22%20fill%3D%22%23000%22%20transform%3D%22rotate%28315%29%22/%3E%3C/g%3E%3C/g%3E%3Cpath%20d%3D%22M-8%2011%20H8.5%20A6.5%206.5%200%200%200%209.3%20-1.9%20A9%209%200%200%200%20-7.8%20-3.2%20A7%207%200%200%200%20-8%2011%20Z%22%20transform%3D%22translate%282%203%29%22%20fill%3D%22%23000%22/%3E%3C/svg%3E")', "var(--link-color)", "sky-drift 6s ease-in-out infinite", "drift", 36, 36, 19, 19),
+    "partly-night": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%3E%3Crect%20x%3D%22-16%22%20y%3D%22-16%22%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%23fff%22/%3E%3Cpath%20d%3D%22M-8%2011%20H8.5%20A6.5%206.5%200%200%200%209.3%20-1.9%20A9%209%200%200%200%20-7.8%20-3.2%20A7%207%200%200%200%20-8%2011%20Z%22%20transform%3D%22translate%282%203%29%22%20fill%3D%22%23000%22%20stroke%3D%22%23000%22%20stroke-width%3D%224%22/%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask%3D%22url%28%23m%29%22%3E%3Cg%20transform%3D%22translate%28-5%20-5%29%20scale%280.6%29%22%3E%3Cpath%20d%3D%22M3.5%20-13%20A13%2013%200%201%200%2013%203.5%20A10%2010%200%200%201%203.5%20-13%20Z%22%20fill%3D%22%23000%22/%3E%3C/g%3E%3C/g%3E%3Cpath%20d%3D%22M-8%2011%20H8.5%20A6.5%206.5%200%200%200%209.3%20-1.9%20A9%209%200%200%200%20-7.8%20-3.2%20A7%207%200%200%200%20-8%2011%20Z%22%20transform%3D%22translate%282%203%29%22%20fill%3D%22%23000%22/%3E%3C/svg%3E")', "var(--link-color)", "sky-drift 6s ease-in-out infinite", "drift", 36, 36, 19, 19),
+    "cloud": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%3E%3Cpath%20d%3D%22M-8%2011%20H8.5%20A6.5%206.5%200%200%200%209.3%20-1.9%20A9%209%200%200%200%20-7.8%20-3.2%20A7%207%200%200%200%20-8%2011%20Z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E")', "var(--link-color)", "sky-drift 6s ease-in-out infinite", "drift", 36, 36, 19, 19),
+    "fog": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M-12%20-7%20H8%22/%3E%3Cpath%20d%3D%22M-6%200%20H13%22/%3E%3Cpath%20d%3D%22M-13%207%20H5%22/%3E%3Cpath%20d%3D%22M-4%2014%20H10%22%20opacity%3D%22.001%22/%3E%3C/svg%3E")', "var(--link-color)", "sky-haze 5s ease-in-out infinite", "haze", 34, 34, 18, 18),
+    "rain": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2032%22%3E%3Cpath%20d%3D%22M12%201C12%201%202%2013.5%202%2020.5a10%2010%200%200%200%2020%200C22%2013.5%2012%201%2012%201z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E")', "var(--link-color)", "sky-drip 2.6s ease-in infinite", "drip", 24, 34, 13, 18),
+    "snow": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%3E%3Cg%20transform%3D%22rotate%280%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%2860%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28120%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28180%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28240%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28300%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3C/svg%3E")', "var(--link-color)", "sky-flake 7s linear infinite", "flake", 34, 34, 18, 18),
+    "storm": ('url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%3E%3Crect%20x%3D%22-16%22%20y%3D%22-16%22%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%23fff%22/%3E%3Cpath%20d%3D%22M1%200%20L-5%208%20H0%20L-3%2016%20L6%205%20H1%20L4%200%20Z%22%20fill%3D%22%23000%22%20stroke%3D%22%23000%22%20stroke-width%3D%223.5%22%20stroke-linejoin%3D%22round%22/%3E%3C/mask%3E%3C/defs%3E%3Cpath%20d%3D%22M-8%2011%20H8.5%20A6.5%206.5%200%200%200%209.3%20-1.9%20A9%209%200%200%200%20-7.8%20-3.2%20A7%207%200%200%200%20-8%2011%20Z%22%20transform%3D%22translate%280%20-4%29%22%20fill%3D%22%23000%22%20mask%3D%22url%28%23m%29%22/%3E%3Cpath%20d%3D%22M1%200%20L-5%208%20H0%20L-3%2016%20L6%205%20H1%20L4%200%20Z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E")', "var(--link-color)", "sky-flash 4s linear infinite", "flash", 36, 36, 19, 19),
+}
+
+
+def icons_for(code):
+    """WMO code -> (day icon, night icon)."""
+    if code == 0:
+        return "sun", "moon"
+    if code in (1, 2):
+        return "partly-day", "partly-night"
+    if code in (45, 48):
+        return "fog", "fog"
+    if code in (95, 96, 99):
+        return "storm", "storm"
+    if code in (71, 73, 75, 77, 85, 86):
+        return "snow", "snow"
+    if code in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82):
+        return "rain", "rain"
+    return "cloud", "cloud"
+
+
+def icon_rule(selector, key):
+    shape, colour, anim, _, w, h, nw, nh = ICONS[key]
+    return (
+        f"{selector} .sky-badge::before {{\n"
+        f"    width: {w}px;\n    height: {h}px;\n    background: {colour};\n"
+        f"    -webkit-mask: {shape} center / contain no-repeat;\n    mask: {shape} center / contain no-repeat;\n"
+        f"    animation: {anim};\n}}\n"
+        f"@media (max-width: 1000px) {{\n    {selector} .sky-badge::before {{ width: {nw}px; height: {nh}px; }}\n}}\n"
+    )
+
+
+BADGE_LAYOUT = """
+/* Berlin badge with a weather symbol on the left */
+.sky-badge {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 14px;
+    align-items: center;
+    padding-left: 14px;
+}
+.sky-badge > div {
+    grid-column: 2;
+}
+.sky-badge::before {
+    content: "";
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    justify-self: center;
+}
+@media (max-width: 1000px) {
+    .sky-badge {
+        display: flex;
+        padding-left: 11px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sky-badge::before {
+        animation: none !important;
+    }
+}
+"""
+
+
+def badge_css(code, time_of_day):
+    day, night = icons_for(code)
+    used = {ICONS[day][3], ICONS[night][3]}
+    css = BADGE_LAYOUT + "\n".join(KF[k] for k in sorted(used)) + "\n"
+    css += icon_rule("html", day)
+    if night != day:
+        css += icon_rule("html.sky-night", night)
+        if time_of_day == "night":  # readers without JavaScript
+            css += icon_rule("html:not(.sky-js)", night)
+    return css
 
 
 # ---------------------------------------------------------------- weather and time of day
@@ -289,7 +301,7 @@ def berlin_weather():
     }
 
 
-def build_css(time_of_day, weather, temp, clock):
+def build_css(time_of_day, weather, temp, clock, code=None):
     base = (HERE / "fonts" / "fraunces.css").read_text(encoding="utf-8") + "\n" + (HERE / "base.css").read_text(encoding="utf-8")
     block = lambda t: "\n".join(f"    {k}: {v};" for k, v in {**LIGHT_TEXT, **SKINS[t]}.items())
     vars_ = block(time_of_day)
@@ -309,6 +321,7 @@ def build_css(time_of_day, weather, temp, clock):
         f':root {{ --sky-posts: "{" ".join(quotable_paths())}"; }}\n'
         f'.sky-badge .temp::before {{ content: "{temp_txt}"; }}\n'
         f'.sky-badge .clock:empty::before {{ content: "{clock}"; }}\n'
+        + (badge_css(code, time_of_day) if code is not None else "")
     )
 
 
@@ -409,7 +422,7 @@ BLOCK_RX = re.compile(r'<div class="sky-quote">.*?</ul></div>', re.S)  # matches
 def job_sky(bear):
     w = berlin_weather()
     print(f"Berlin {w['clock']}: {w['time']}, {w['weather']} (code {w['code']}), {w['temp']}°C")
-    css = build_css(w["time"], w["weather"], w["temp"], w["clock"])
+    css = build_css(w["time"], w["weather"], w["temp"], w["clock"], w["code"])
     current = bear.call("GET", "blog/").get("custom_styles", "")
     # the clock fallback changes every run; only write when something else changed
     strip = lambda s: re.sub(r"set \d\d:\d\d Berlin time|content: \"\d\d:\d\d\"", "", s or "")
