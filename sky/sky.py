@@ -95,41 +95,7 @@ STARS = ",\n    ".join(
     ]
 )
 
-VEIL = """
-/* frosted veil behind the text column so rain and snow don't get in the way of reading */
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: min(100%, calc(var(--width) + 2 * var(--gutter)));
-    transform: translateX(-50%);
-    z-index: 0;
-    pointer-events: none;
-    background: rgba(var(--veil), .32);
-    -webkit-backdrop-filter: blur(7px);
-    backdrop-filter: blur(7px);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
-}
-/* keep the text above the veil */
-body > header,
-body > main,
-footer > :not(.sky-badge):not(#footer-directive) {
-    position: relative;
-    z-index: 1;
-}
-@media (max-width: 860px) {
-    body::before {
-        background: rgba(var(--veil), .16);
-        -webkit-backdrop-filter: blur(2.5px);
-        backdrop-filter: blur(2.5px);
-        -webkit-mask-image: none;
-        mask-image: none;
-    }
-}
-"""
+
 
 WEATHER = {
     "clear": """
@@ -161,34 +127,60 @@ html::after {
 html::before {
     background: var(--wash);
 }
-html::after {
-    inset: -25%;
-    transform: rotate(9deg);
-    background-image:
-        radial-gradient(ellipse 1px 9px at 30% 40%, rgba(var(--fx), .36) 55%, transparent 100%),
-        radial-gradient(ellipse 1px 7px at 70% 20%, rgba(var(--fx), .28) 55%, transparent 100%),
-        radial-gradient(ellipse 1.2px 11px at 50% 70%, rgba(var(--fx), .32) 55%, transparent 100%);
-    background-size: 47px 83px, 71px 109px, 97px 151px;
-    background-position: 0 0, 19px 37px, 61px 13px;
+/* rain shows only inside the Berlin badge: a few hand-placed drops */
+.sky-badge {
+    overflow: hidden;
 }
-""" + VEIL,
+.sky-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 5% 14% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 13% 52% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 6% 84% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 19% 28% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 87% 18% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 94% 48% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 81% 76% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 92% 90% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 16% 70% / 5px 10px no-repeat,
+        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 84% 40% / 5px 10px no-repeat;
+}
+""",
     "snow": """
 html::before {
     background: var(--wash);
 }
-html::after {
-    inset: -25%;
-    transform: rotate(-17deg);
-    background-image:
-        radial-gradient(circle at 30% 40%, rgba(255,255,255,.95) 0 1.8px, transparent 2.6px),
-        radial-gradient(circle at 70% 20%, rgba(255,255,255,.85) 0 1.3px, transparent 2px),
-        radial-gradient(circle at 50% 70%, rgba(255,255,255,.9) 0 2.4px, transparent 3.2px),
-        radial-gradient(circle at 40% 30%, rgba(255,255,255,.55) 0 2px, rgba(255,255,255,.2) 5px, transparent 8px),
-        radial-gradient(circle at 20% 60%, rgba(255,255,255,.7) 0 .9px, transparent 1.5px);
-    background-size: 61px 79px, 89px 113px, 127px 149px, 211px 233px, 37px 53px;
-    background-position: 0 0, 23px 41px, 57px 11px, 101px 87px, 9px 29px;
+/* snow shows only inside the Berlin badge: a few hand-placed flakes */
+.sky-badge {
+    overflow: hidden;
+    background: rgba(var(--fx), .22);
 }
-""" + VEIL,
+.sky-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 7% 18%, rgba(255,255,255,.95) 0 1.6px, rgba(255,255,255,.35) 2.4px, transparent 3.2px),
+        radial-gradient(circle at 15% 62%, rgba(255,255,255,.95) 0 2.2px, rgba(255,255,255,.35) 3.0px, transparent 3.8px),
+        radial-gradient(circle at 6% 88%, rgba(255,255,255,.95) 0 1.4px, rgba(255,255,255,.35) 2.2px, transparent 3.0px),
+        radial-gradient(circle at 22% 30%, rgba(255,255,255,.95) 0 1.3px, rgba(255,255,255,.35) 2.1px, transparent 2.9px),
+        radial-gradient(circle at 88% 16%, rgba(255,255,255,.95) 0 2.3px, rgba(255,255,255,.35) 3.1px, transparent 3.9px),
+        radial-gradient(circle at 94% 52%, rgba(255,255,255,.95) 0 1.5px, rgba(255,255,255,.35) 2.3px, transparent 3.1px),
+        radial-gradient(circle at 83% 80%, rgba(255,255,255,.95) 0 2.0px, rgba(255,255,255,.35) 2.8px, transparent 3.6px),
+        radial-gradient(circle at 92% 90%, rgba(255,255,255,.95) 0 1.2px, rgba(255,255,255,.35) 2.0px, transparent 2.8px),
+        radial-gradient(circle at 18% 84%, rgba(255,255,255,.95) 0 1.8px, rgba(255,255,255,.35) 2.6px, transparent 3.4px),
+        radial-gradient(circle at 80% 44%, rgba(255,255,255,.95) 0 1.4px, rgba(255,255,255,.35) 2.2px, transparent 3.0px),
+        radial-gradient(circle at 50% 7%, rgba(255,255,255,.95) 0 1.1px, rgba(255,255,255,.35) 1.9px, transparent 2.7px),
+        radial-gradient(circle at 40% 95%, rgba(255,255,255,.95) 0 1.3px, rgba(255,255,255,.35) 2.1px, transparent 2.9px),
+        radial-gradient(circle at 62% 94%, rgba(255,255,255,.95) 0 1.6px, rgba(255,255,255,.35) 2.4px, transparent 3.2px);
+}
+""",
     "fog": """
 html::before {
     inset: -10%;
