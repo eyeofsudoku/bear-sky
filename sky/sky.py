@@ -272,33 +272,77 @@ def classify_time(now, sunrise, sunset):
     return "day"
 
 
-def berlin_weather():
-    url = (
+def fetch_json(url, timeout=30):
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.load(r)
+
+
+def sun_times(now):
+    """Approximate sunrise and sunset for Berlin (used when the weather service gives none)."""
+    import math
+    n = now.timetuple().tm_yday
+    lat = math.radians(LAT)
+    decl = math.radians(23.44) * math.sin(2 * math.pi * (284 + n) / 365)
+    ha = math.degrees(math.acos(-math.tan(lat) * math.tan(decl)))
+    off = now.utcoffset().total_seconds() / 3600
+    noon = 12 + off - LON / 15
+    mk = lambda h: now.replace(hour=int(h), minute=int((h % 1) * 60), second=0, microsecond=0)
+    return mk(noon - ha / 15), mk(noon + ha / 15)
+
+
+BRIGHTSKY_CODES = {
+    "clear-day": 0, "clear-night": 0, "partly-cloudy-day": 2, "partly-cloudy-night": 2,
+    "cloudy": 3, "wind": 3, "fog": 45, "rain": 61, "sleet": 66, "snow": 73,
+    "hail": 96, "thunderstorm": 95,
+}
+
+
+def from_open_meteo():
+    d = fetch_json(
         "https://api.open-meteo.com/v1/forecast"
         f"?latitude={LAT}&longitude={LON}"
         "&current=temperature_2m,weather_code&daily=sunrise,sunset"
         "&timezone=Europe%2FBerlin&forecast_days=1"
     )
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    for attempt in range(3):
-        try:
-            with urllib.request.urlopen(req, timeout=20) as r:
-                d = json.load(r)
-            break
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
-            if attempt == 2:
-                raise SystemExit(f"Weather service unreachable: {e}")
-            time.sleep(10)
-    now = datetime.now(BERLIN)
     sunrise = datetime.fromisoformat(d["daily"]["sunrise"][0]).replace(tzinfo=BERLIN)
     sunset = datetime.fromisoformat(d["daily"]["sunset"][0]).replace(tzinfo=BERLIN)
-    return {
-        "time": classify_time(now, sunrise, sunset),
-        "weather": classify_weather(int(d["current"]["weather_code"])),
-        "temp": round(float(d["current"]["temperature_2m"])),
-        "clock": now.strftime("%H:%M"),
-        "code": int(d["current"]["weather_code"]),
-    }
+    return int(d["current"]["weather_code"]), float(d["current"]["temperature_2m"]), sunrise, sunset
+
+
+def from_bright_sky():
+    """Fallback: Bright Sky (open data of the German weather service DWD)."""
+    w = fetch_json(f"https://api.brightsky.dev/current_weather?lat={LAT}&lon={LON}")["weather"]
+    code = BRIGHTSKY_CODES.get(w.get("icon") or "", None)
+    if code is None:
+        code = {"rain": 61, "sleet": 66, "snow": 73, "hail": 96, "thunderstorm": 95, "fog": 45}.get(w.get("condition"), 3)
+    sunrise, sunset = sun_times(datetime.now(BERLIN))
+    return code, float(w["temperature"]), sunrise, sunset
+
+
+def berlin_weather():
+    """Current Berlin weather. Tries Bright Sky (DWD data), then Open-Meteo, each a few times.
+    Returns None if both are unreachable (the blog then keeps its current sky)."""
+    for name, source in (("Bright Sky", from_bright_sky), ("Open-Meteo", from_open_meteo)):
+        for attempt in range(3):
+            try:
+                code, temp, sunrise, sunset = source()
+                break
+            except Exception as e:  # network trouble, odd answer: try again, then the next service
+                print(f"{name} attempt {attempt + 1} failed: {e}")
+                time.sleep(8)
+        else:
+            continue
+        now = datetime.now(BERLIN)
+        return {
+            "time": classify_time(now, sunrise, sunset),
+            "weather": classify_weather(code),
+            "temp": round(temp),
+            "clock": now.strftime("%H:%M"),
+            "code": code,
+            "source": name,
+        }
+    return None
 
 
 def build_css(time_of_day, weather, temp, clock, code=None):
@@ -421,6 +465,10 @@ BLOCK_RX = re.compile(r'<div class="sky-quote">.*?</ul></div>', re.S)  # matches
 
 def job_sky(bear):
     w = berlin_weather()
+    if w is None:
+        print("::warning::No weather service answered; the blog keeps its current sky until the next run.")
+        return
+    print(f"Weather from {w['source']}.")
     print(f"Berlin {w['clock']}: {w['time']}, {w['weather']} (code {w['code']}), {w['temp']}°C")
     css = build_css(w["time"], w["weather"], w["temp"], w["clock"], w["code"])
     current = bear.call("GET", "blog/").get("custom_styles", "")
