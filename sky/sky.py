@@ -127,58 +127,96 @@ html::after {
 html::before {
     background: var(--wash);
 }
-/* rain shows only inside the Berlin badge: a few hand-placed drops */
+/* rain: a large rain symbol on the left of the Berlin badge, gently moving */
 .sky-badge {
-    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 14px;
+    align-items: center;
+    padding-left: 14px;
+}
+.sky-badge > div {
+    grid-column: 2;
 }
 .sky-badge::before {
     content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 5% 14% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 13% 52% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 6% 84% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 19% 28% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 87% 18% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 94% 48% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 81% 76% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 92% 90% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 16% 70% / 5px 10px no-repeat,
-        linear-gradient(105deg, transparent 46%, rgba(var(--fx), .5) 47% 53%, transparent 54%) 84% 40% / 5px 10px no-repeat;
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    width: 24px;
+    height: 34px;
+    background: var(--link-color);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2032%22%3E%3Cpath%20d%3D%22M12%201C12%201%202%2013.5%202%2020.5a10%2010%200%200%200%2020%200C22%2013.5%2012%201%2012%201z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2032%22%3E%3Cpath%20d%3D%22M12%201C12%201%202%2013.5%202%2020.5a10%2010%200%200%200%2020%200C22%2013.5%2012%201%2012%201z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") center / contain no-repeat;
+    animation: sky-drip 2.6s ease-in infinite;
+}
+@keyframes sky-drip {
+    0% { transform: translateY(-7px) scale(.85); opacity: 0; }
+    18% { opacity: 1; }
+    62% { transform: translateY(3px) scale(1); opacity: 1; }
+    82% { transform: translateY(7px) scaleY(.8) scaleX(1.15); opacity: 0; }
+    100% { transform: translateY(7px); opacity: 0; }
+}
+@media (max-width: 1000px) {
+    .sky-badge {
+        display: flex;
+        padding-left: 11px;
+    }
+    .sky-badge::before {
+        width: 13px;
+        height: 18px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sky-badge::before {
+        animation: none;
+    }
 }
 """,
     "snow": """
 html::before {
     background: var(--wash);
 }
-/* snow shows only inside the Berlin badge: a few hand-placed flakes */
+/* snow: a large snow symbol on the left of the Berlin badge, gently moving */
 .sky-badge {
-    overflow: hidden;
-    background: rgba(var(--fx), .22);
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 14px;
+    align-items: center;
+    padding-left: 14px;
+}
+.sky-badge > div {
+    grid-column: 2;
 }
 .sky-badge::before {
     content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image:
-        radial-gradient(circle at 7% 18%, rgba(255,255,255,.95) 0 1.6px, rgba(255,255,255,.35) 2.4px, transparent 3.2px),
-        radial-gradient(circle at 15% 62%, rgba(255,255,255,.95) 0 2.2px, rgba(255,255,255,.35) 3.0px, transparent 3.8px),
-        radial-gradient(circle at 6% 88%, rgba(255,255,255,.95) 0 1.4px, rgba(255,255,255,.35) 2.2px, transparent 3.0px),
-        radial-gradient(circle at 22% 30%, rgba(255,255,255,.95) 0 1.3px, rgba(255,255,255,.35) 2.1px, transparent 2.9px),
-        radial-gradient(circle at 88% 16%, rgba(255,255,255,.95) 0 2.3px, rgba(255,255,255,.35) 3.1px, transparent 3.9px),
-        radial-gradient(circle at 94% 52%, rgba(255,255,255,.95) 0 1.5px, rgba(255,255,255,.35) 2.3px, transparent 3.1px),
-        radial-gradient(circle at 83% 80%, rgba(255,255,255,.95) 0 2.0px, rgba(255,255,255,.35) 2.8px, transparent 3.6px),
-        radial-gradient(circle at 92% 90%, rgba(255,255,255,.95) 0 1.2px, rgba(255,255,255,.35) 2.0px, transparent 2.8px),
-        radial-gradient(circle at 18% 84%, rgba(255,255,255,.95) 0 1.8px, rgba(255,255,255,.35) 2.6px, transparent 3.4px),
-        radial-gradient(circle at 80% 44%, rgba(255,255,255,.95) 0 1.4px, rgba(255,255,255,.35) 2.2px, transparent 3.0px),
-        radial-gradient(circle at 50% 7%, rgba(255,255,255,.95) 0 1.1px, rgba(255,255,255,.35) 1.9px, transparent 2.7px),
-        radial-gradient(circle at 40% 95%, rgba(255,255,255,.95) 0 1.3px, rgba(255,255,255,.35) 2.1px, transparent 2.9px),
-        radial-gradient(circle at 62% 94%, rgba(255,255,255,.95) 0 1.6px, rgba(255,255,255,.35) 2.4px, transparent 3.2px);
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    width: 34px;
+    height: 34px;
+    background: var(--link-color);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%3E%3Cg%20transform%3D%22rotate%280%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%2860%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28120%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28180%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28240%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28300%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-16%20-16%2032%2032%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%3E%3Cg%20transform%3D%22rotate%280%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%2860%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28120%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28180%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28240%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3Cg%20transform%3D%22rotate%28300%29%22%3E%3Cpath%20d%3D%22M0%200V-13M0%20-8.5L-3.5%20-11.5M0%20-8.5L3.5%20-11.5M0%20-4L-2.5%20-6.2M0%20-4L2.5%20-6.2%22/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+    animation: sky-flake 7s linear infinite;
+}
+@keyframes sky-flake {
+    0% { transform: translate(-1px, -2px) rotate(0deg); }
+    50% { transform: translate(1px, 2px) rotate(30deg); }
+    100% { transform: translate(-1px, -2px) rotate(60deg); }
+}
+@media (max-width: 1000px) {
+    .sky-badge {
+        display: flex;
+        padding-left: 11px;
+    }
+    .sky-badge::before {
+        width: 18px;
+        height: 18px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sky-badge::before {
+        animation: none;
+    }
 }
 """,
     "fog": """
